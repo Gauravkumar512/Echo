@@ -1,26 +1,22 @@
 import express from 'express';
 import cors from 'cors';
-import { Server } from 'socket.io';
 import http from 'http';    
 import dotenv from 'dotenv';
 import connectDb from './config/db';
 import cookieParser from 'cookie-parser';
+import { initSocket } from './socket';
+import healthcheck from "./routes/healthCheck.routes";
 dotenv.config()
 
-const port = process.env.PORT
+const port = Number(process.env.PORT)
 const app = express()
 
-const server = http.createServer(app);
+export const server = http.createServer(app);
 
-const io = new Server(server, {
-    cors: {
-        origin: '*',
-        credentials: true
-    }
-})
+initSocket(server)
 
 app.use(cors({
-    origin: '*',
+    origin:  process.env.CLIENT_URL,
     credentials: true
 }))
 app.use(cookieParser())
@@ -32,7 +28,7 @@ app.use(express.urlencoded({extended: true, limit: '50mb'}))
 app.use(express.static('public'))
 
 // routes
-
+app.use('/api/healthcheck', healthcheck)
 
 const main = async ()=>{
     await connectDb()
