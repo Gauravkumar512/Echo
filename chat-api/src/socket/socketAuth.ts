@@ -9,7 +9,7 @@ interface customJwtPayload extends JwtPayload{
 
 const socketAuth = (socket: Socket, next: (err?: Error)=> void) =>{
 
-    const token = socket.handshake.auth.token
+    const token = socket.handshake.query.token as string
 
     if(!token){
         return next(new Error("Unauthorized"))
@@ -24,8 +24,8 @@ const socketAuth = (socket: Socket, next: (err?: Error)=> void) =>{
         }
         
         next()
-    } catch (error) {
-        next(new Error("Invalid token"))
+    } catch (error: any) {
+        next(new Error(`Invalid token: ${error.message}`));
     }
 
 

@@ -43,7 +43,7 @@ export const registerUser = asyncHandler(async (req: Request,res: Response)=>{
         password
     })
 
-const UserData = await User.findById(user._id).select("-password")
+const UserData = await User.findById(user._id).select("-password -__v")
 
     if(!UserData){
         throw new ApiError(404, "User not found")
@@ -76,7 +76,7 @@ export const loginUser = asyncHandler(async (req: Request,res: Response)=>{
 
     const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id.toString())
 
-    const logginUser = await User.findById(user._id).select("-password -refreshToken")
+    const logginUser = await User.findById(user._id).select("-password -refreshToken -__v")
 
     const option = {
         httpOnly: true,
