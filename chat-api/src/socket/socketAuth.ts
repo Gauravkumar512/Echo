@@ -9,14 +9,20 @@ interface customJwtPayload extends JwtPayload{
 
 const socketAuth = (socket: Socket, next: (err?: Error)=> void) =>{
 
-    const token = socket.handshake.query.token as string
+    const cookie = socket.handshake.headers.cookie as string
 
-    if(!token){
+    if(!cookie){
+        return next(new Error("Unauthorized"))
+    }
+
+    const accessToken = cookie.split("; ").find((c) => c.trim().startsWith("accessToken="))?.split("=")[1]
+
+    if(!accessToken){
         return next(new Error("Unauthorized"))
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as customJwtPayload
+        const decoded = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as customJwtPayload
 
         socket.data.user = {
             _id: decoded._id,
@@ -25,7 +31,7 @@ const socketAuth = (socket: Socket, next: (err?: Error)=> void) =>{
         
         next()
     } catch (error: any) {
-        next(new Error(`Invalid token: ${error.message}`));
+        next(new Error(`Invalid cookie: ${error.message}`));
     }
 
 
