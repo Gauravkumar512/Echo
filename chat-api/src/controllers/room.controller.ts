@@ -1,8 +1,9 @@
 import asyncHandler from "../utils/AsyncHandler";
 import ApiResponse from "../utils/ApiResponse";
 import ApiError from "../utils/ApiError";
-import type { Request, Response } from "../types/index";
+import type { Request, Response, RoomCreatedPayload } from "../types/index";
 import { Room } from "../models/Room";
+import { io } from "../socket";
 
 
 export const createRoom = asyncHandler(async (req: Request,res: Response)=>{
@@ -23,10 +24,22 @@ export const createRoom = asyncHandler(async (req: Request,res: Response)=>{
     const room = await Room.create({
         name,
         description,
-        createdBy: userId
-    })
+        createdBy: userId,
+    });
 
-    return res.status(201).json(new ApiResponse(201, "Room created successfully", room))
+    const populated = await Room.findById(room._id)
+        .populate("createdBy", "username email")
+        .lean();
+
+    if (io && populated) {
+        io.emit("room-created", {
+            room: populated as unknown as RoomCreatedPayload,
+        });
+    }
+
+    return res
+        .status(201)
+        .json(new ApiResponse(201, "Room created successfully", populated ?? room));
 })
 
 export const getAllRooms = asyncHandler(async (req: Request, res: Response)=>{
@@ -61,3 +74,15 @@ export const deleteRoom = asyncHandler(async (req: Request, res: Response)=>{
     return res.status(200).json(new ApiResponse(200, "Room deleted successfully"))
 
 })
+
+export const getRoomById = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const room = await Room.findById(id).populate("createdBy", "username email");
+
+    if (!room) {
+        throw new ApiError(404, "Room not found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, "Room fetched successfully", room));
+});

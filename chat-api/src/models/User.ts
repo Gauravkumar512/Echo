@@ -8,6 +8,7 @@ export interface IUser extends Document {
     password: string;
     avatar?: string;
     googleId?: string;
+    githubId?: string;
     refreshToken?: string;
     comparePassword(candidatePassword: string): Promise<boolean>;
     generateAccessToken(): string;
@@ -18,6 +19,7 @@ const UserSchema: Schema<IUser> = new Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     googleId: { type: String},
+    githubId: { type: String},
     password: { type: String},
     avatar: { type: String},
     refreshToken: { type: String}

@@ -2,15 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import http from 'http';    
 import dotenv from 'dotenv';
+dotenv.config()
+
 import connectDb from './config/db';
 import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import './config/passport';
 import { initSocket } from './socket';
 import healthcheck from "./routes/healthCheck.routes";
 import auth from "./routes/auth.routes";
 import room from "./routes/room.routes";
 import message from "./routes/message.routes";
 import { errorHandler } from './middleware/error.middleware';
-dotenv.config()
 
 
 const port = Number(process.env.PORT)
@@ -25,6 +28,7 @@ app.use(cors({
     credentials: true
 }))
 app.use(cookieParser())
+app.use(passport.initialize())
 
 // common middlewares
 

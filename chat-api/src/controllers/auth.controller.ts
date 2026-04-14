@@ -2,7 +2,7 @@ import asyncHandler from "../utils/AsyncHandler";
 import ApiResponse from "../utils/ApiResponse";
 import ApiError from "../utils/ApiError";
 import type { Request, Response } from "../types/index";
-import { User } from "../models/User";
+import { User, type IUser } from "../models/User";
 
 const generateAccessAndRefreshToken = async (userId: string) => {
     try {
@@ -49,7 +49,17 @@ const UserData = await User.findById(user._id).select("-password -__v")
         throw new ApiError(404, "User not found")
     }
 
-    return res.status(201).json(new ApiResponse(201, "User registered successfully", UserData))
+    const accessToken = user.generateAccessToken()
+
+    const option = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production"
+    }
+
+    return res
+            .status(201)
+            .cookie("accessToken", accessToken, option)
+            .json(new ApiResponse(201, "User registered successfully", UserData))
 
 })
 
@@ -91,15 +101,19 @@ export const loginUser = asyncHandler(async (req: Request,res: Response)=>{
 })
 
 export const logoutUser = asyncHandler(async (req: Request,res: Response)=>{
-    await User.findByIdAndUpdate(
-        req.user!._id,
-        {$unset: {refreshToken: 1}},
-        {new: true}
-    )
+
+    if (req.user?._id) {
+        await User.findByIdAndUpdate(
+            req.user._id,
+            {$unset: {refreshToken: 1}},
+            {new: true}
+        )
+    }
 
     const option = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production"
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" as const
     }
 
     return res 
@@ -108,3 +122,62 @@ export const logoutUser = asyncHandler(async (req: Request,res: Response)=>{
             .clearCookie("refreshToken", option)
             .json(new ApiResponse(200,"User logged out successfully"))
 })
+
+
+export const currentUser = asyncHandler(async (req: Request,res: Response)=>{
+
+    return res.status(200).json(new ApiResponse(200, "Current user fetched successfully", req.user))
+})
+
+
+export const googleCallback = async (req: Request, res: Response) => {
+    try {
+        const user = req.user as IUser;
+
+        if (!user) {
+            return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
+        }
+
+        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+            user._id.toString()
+        );
+
+        const option = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+        };
+
+        return res
+            .cookie("accessToken", accessToken, option)
+            .cookie("refreshToken", refreshToken, option)
+            .redirect(process.env.CLIENT_URL as string);
+    } catch (error) {
+        return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
+    }
+};
+
+export const githubCallback = async (req: Request, res: Response) => {
+    try {
+        const user = req.user as IUser;
+
+        if (!user) {
+            return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
+        }
+
+        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+            user._id.toString()
+        );
+
+        const option = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+        };
+
+        return res
+            .cookie("accessToken", accessToken, option)
+            .cookie("refreshToken", refreshToken, option)
+            .redirect(process.env.CLIENT_URL as string);
+    } catch (error) {
+        return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
+    }
+};
