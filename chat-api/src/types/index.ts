@@ -3,12 +3,18 @@ import type { IUser } from "../models/User"
 
 declare global {
     namespace Express {
-        interface Request {
-            user?: IUser
-        }
+        interface User extends IUser {}
     }
 }
 
+export interface RoomCreatedPayload {
+    _id: string
+    name: string
+    description?: string
+    createdBy: { _id: string; username: string; email?: string }
+    createdAt: string
+    updatedAt?: string
+}
 
 export interface ServerToClientEvents {
     "receive-message": (data: {
@@ -19,9 +25,10 @@ export interface ServerToClientEvents {
         room: string
         createdAt: Date
     }) => void
-    "user-joined": (data: { userId: string; username: string }) => void
-    "user-left": (data: { userId: string; username: string }) => void
-    "online-users": (data: { users: string[] }) => void
+    "user-joined": (data: { roomId: string; userId: string; username: string }) => void
+    "user-left": (data: { roomId: string; userId: string; username: string }) => void
+    "room-created": (data: { room: RoomCreatedPayload }) => void
+    "online-users": (data: { roomId: string; users: string[] }) => void
 }
 
 export interface ClientToServerEvents {

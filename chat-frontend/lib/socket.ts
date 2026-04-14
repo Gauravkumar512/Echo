@@ -7,4 +7,12 @@ export const socket: Socket = io(socketUrl, {
     withCredentials: true,
 })
 
-export default socket
+export const connectSocket = (): Socket => {
+    if (!socket.connected) {
+        socket.connect()
+    }
+
+    return socket
+}
+
+export default connectSocket
