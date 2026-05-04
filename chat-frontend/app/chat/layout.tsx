@@ -11,6 +11,7 @@ import Toast, { type ToastItem } from '@/components/ui/Toast';
 import CreateRoomModal from '@/components/chat/CreateRoomModal';
 import type { IRoom as IRoomType, IRoom as IRoomApi } from '@/types';
 import axios from 'axios';
+import { clearAuthToken } from '@/lib/authStorage';
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
     const [isHydrating, setIsHydrating] = useState(true);
@@ -39,6 +40,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
                 setIsHydrating(false);
             } catch {
                 console.error("Hydration failed, redirecting to login");
+                clearAuthToken();
                 setUser(null);
                 router.push('/login');
             }
@@ -119,6 +121,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
             }
         } finally {
             socket.disconnect();
+            clearAuthToken();
             setUser(null);
             router.push('/');
         }

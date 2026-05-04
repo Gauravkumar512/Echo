@@ -35,6 +35,12 @@ const generateAccessAndRefreshToken = async (userId: string) => {
     }
 }
 
+const buildOAuthRedirect = (accessToken: string) => {
+    const callbackUrl = new URL(`${process.env.CLIENT_URL}/oauth`)
+    callbackUrl.searchParams.set("accessToken", accessToken)
+    return callbackUrl.toString()
+}
+
 export const registerUser = asyncHandler(async (req: Request,res: Response)=>{
 
     const {username,email, password} = req.body
@@ -66,7 +72,11 @@ const UserData = await User.findById(user._id).select("-password -__v")
     return res
             .status(201)
             .cookie("accessToken", accessToken, option)
-            .json(new ApiResponse(201, "User registered successfully", UserData))
+            .json(new ApiResponse(201, "User registered successfully", {
+                user: UserData,
+                accessToken,
+                refreshToken: null,
+            }))
 
 })
 
@@ -101,7 +111,11 @@ export const loginUser = asyncHandler(async (req: Request,res: Response)=>{
             .status(200)
             .cookie("accessToken", accessToken, option)
             .cookie("refreshToken", refreshToken, option)
-            .json(new ApiResponse(200, "User logged in successfully", logginUser))
+            .json(new ApiResponse(200, "User logged in successfully", {
+                user: logginUser,
+                accessToken,
+                refreshToken,
+            }))
 })
 
 export const logoutUser = asyncHandler(async (req: Request,res: Response)=>{
@@ -147,7 +161,7 @@ export const googleCallback = async (req: Request, res: Response) => {
         return res
             .cookie("accessToken", accessToken, option)
             .cookie("refreshToken", refreshToken, option)
-            .redirect(`${process.env.CLIENT_URL}/chat`);
+            .redirect(buildOAuthRedirect(accessToken));
     } catch (error) {
         return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
     }
@@ -170,7 +184,7 @@ export const githubCallback = async (req: Request, res: Response) => {
         return res
             .cookie("accessToken", accessToken, option)
             .cookie("refreshToken", refreshToken, option)
-            .redirect(`${process.env.CLIENT_URL}/chat`);
+            .redirect(buildOAuthRedirect(accessToken));
     } catch (error) {
         return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
     }

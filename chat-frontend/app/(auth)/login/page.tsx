@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/store/useAuthStore"
 import Image from "next/image"
 import axios from "axios"
+import { persistAuthToken } from "@/lib/authStorage"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
@@ -32,7 +33,10 @@ export default function LoginPage() {
         setLoading(true)
         try {
             const response = await apiClient.post('/auth/login', { email, password })
-            const userData = response.data.data
+            const { user: userData, accessToken } = response.data.data
+            if (accessToken) {
+                persistAuthToken(accessToken)
+            }
             setUser(userData)
             connectSocket()
             router.push('/chat')
