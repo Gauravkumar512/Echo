@@ -52,14 +52,17 @@ export const getAllRooms = asyncHandler(async (req: Request, res: Response)=>{
 
 export const deleteRoom = asyncHandler(async (req: Request, res: Response)=>{
 
-    const {id} = req.params
+    let { id } = req.params;
+    if (!id || Array.isArray(id)) {
+        throw new ApiError(400, "Invalid room id");
+    }
     const userId = req.user?._id
 
     if(!userId){
         throw new ApiError(401, "Unauthorized")
     }
 
-    const room = await Room.findById(id)
+    const room = await Room.findById(id as string)
 
     if(!room){
         throw new ApiError(404, "Room not found")
@@ -70,6 +73,10 @@ export const deleteRoom = asyncHandler(async (req: Request, res: Response)=>{
     }
 
     await room.deleteOne();
+
+    if (io) {
+        io.emit("room-deleted", { id });
+    }
 
     return res.status(200).json(new ApiResponse(200, "Room deleted successfully"))
 

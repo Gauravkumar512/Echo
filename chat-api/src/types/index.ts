@@ -28,6 +28,7 @@ export interface ServerToClientEvents {
     "user-joined": (data: { roomId: string; userId: string; username: string }) => void
     "user-left": (data: { roomId: string; userId: string; username: string }) => void
     "room-created": (data: { room: RoomCreatedPayload }) => void
+    "room-deleted": (data: { id: string }) => void
     "online-users": (data: { roomId: string; users: string[] }) => void
 }
 
