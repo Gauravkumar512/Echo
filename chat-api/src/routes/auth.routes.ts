@@ -8,6 +8,8 @@ import passport from "passport";
 
 const router = Router()
 
+const oauthFailureRedirect = `${process.env.CLIENT_URL}/login?error=oauth_failed`
+
 router.route('/register').post(validateSchema(registerSchema), registerUser)
 router.route('/login').post(validateSchema(loginSchema), loginUser)
 router.route('/logout').post(logoutUser)
@@ -19,7 +21,7 @@ router.get(
 );
 router.get(
     '/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+    passport.authenticate('google', { session: false, failureRedirect: oauthFailureRedirect }),
     googleCallback
 );
 
@@ -29,7 +31,7 @@ router.get(
 );
 router.get(
     '/github/callback',
-    passport.authenticate('github', { session: false, failureRedirect: '/login' }),
+    passport.authenticate('github', { session: false, failureRedirect: oauthFailureRedirect }),
     githubCallback
 );
 

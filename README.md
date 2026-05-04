@@ -46,7 +46,7 @@ flowchart LR
 	D --> E[Frontend connects Socket.IO]
 	B -- Yes --> E
 	E --> F[Load /chat dashboard]
-	F --> G[Fetch rooms and join selected room]
+	F --> G["Fetch rooms and\njoin selected room"]
 ```
 
 ```mermaid
@@ -59,8 +59,8 @@ flowchart TD
 	F --> G[All room members update instantly]
 	G --> H{Owner deletes room?}
 	H -- Yes --> I[Server emits room-deleted]
-	I --> J[Members remove the room from the UI]
-	J --> K[Users in the room redirect to /chat]
+	I --> J["Members remove the room\nfrom the UI"]
+	J --> K["Users in the room\nredirect to /chat"]
 ```
 
 ## Main User Flows

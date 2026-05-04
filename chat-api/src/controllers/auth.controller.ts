@@ -1,8 +1,18 @@
 import asyncHandler from "../utils/AsyncHandler";
 import ApiResponse from "../utils/ApiResponse";
 import ApiError from "../utils/ApiError";
+import type { CookieOptions } from "express";
 import type { Request, Response } from "../types/index";
 import { User, type IUser } from "../models/User";
+
+const authCookieOptions = (): CookieOptions => {
+    const isProd = process.env.NODE_ENV === "production";
+    return {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
+    };
+};
 
 const generateAccessAndRefreshToken = async (userId: string) => {
     try {
@@ -51,10 +61,7 @@ const UserData = await User.findById(user._id).select("-password -__v")
 
     const accessToken = user.generateAccessToken()
 
-    const option = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production"
-    }
+    const option = authCookieOptions()
 
     return res
             .status(201)
@@ -88,10 +95,7 @@ export const loginUser = asyncHandler(async (req: Request,res: Response)=>{
 
     const logginUser = await User.findById(user._id).select("-password -refreshToken -__v")
 
-    const option = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production"
-    }
+    const option = authCookieOptions()
 
     return res
             .status(200)
@@ -110,11 +114,7 @@ export const logoutUser = asyncHandler(async (req: Request,res: Response)=>{
         )
     }
 
-    const option = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax" as const
-    }
+    const option = authCookieOptions()
 
     return res 
             .status(200)
@@ -142,15 +142,12 @@ export const googleCallback = async (req: Request, res: Response) => {
             user._id.toString()
         );
 
-        const option = {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-        };
+        const option = authCookieOptions();
 
         return res
             .cookie("accessToken", accessToken, option)
             .cookie("refreshToken", refreshToken, option)
-            .redirect(process.env.CLIENT_URL as string);
+            .redirect(`${process.env.CLIENT_URL}/chat`);
     } catch (error) {
         return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
     }
@@ -168,15 +165,12 @@ export const githubCallback = async (req: Request, res: Response) => {
             user._id.toString()
         );
 
-        const option = {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-        };
+        const option = authCookieOptions();
 
         return res
             .cookie("accessToken", accessToken, option)
             .cookie("refreshToken", refreshToken, option)
-            .redirect(process.env.CLIENT_URL as string);
+            .redirect(`${process.env.CLIENT_URL}/chat`);
     } catch (error) {
         return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
     }
