@@ -43,7 +43,7 @@ flowchart LR
 	A[Visitor opens Echo] --> B{Already authenticated?}
 	B -- No --> C[Login / Register / OAuth]
 	C --> D[API sets httpOnly cookies]
-	D --> E[Frontend connects Socket.IO]
+	D --> E[Frontend connects\nSocket.IO]
 	B -- Yes --> E
 	E --> F[Load /chat dashboard]
 	F --> G["Fetch rooms and\njoin selected room"]
@@ -54,9 +54,9 @@ flowchart TD
 	A[Open a room] --> B[Socket joins room]
 	B --> C[See online users]
 	C --> D[Send message]
-	D --> E[API stores message in MongoDB]
-	E --> F[Server emits receive-message]
-	F --> G[All room members update instantly]
+	D --> E[API stores message in\nMongoDB]
+	E --> F[Server emits\nreceive-message]
+	F --> G[All room members\nupdate instantly]
 	G --> H{Owner deletes room?}
 	H -- Yes --> I[Server emits room-deleted]
 	I --> J["Members remove the room\nfrom the UI"]

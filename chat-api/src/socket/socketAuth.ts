@@ -9,13 +9,14 @@ interface customJwtPayload extends JwtPayload{
 
 const socketAuth = (socket: Socket, next: (err?: Error)=> void) =>{
 
-    const cookie = socket.handshake.headers.cookie as string
+    const handshakeToken = socket.handshake.auth?.token
+    const authorization = socket.handshake.headers.authorization
+    const cookie = socket.handshake.headers.cookie as string | undefined
 
-    if(!cookie){
-        return next(new Error("Unauthorized"))
-    }
-
-    const accessToken = cookie.split("; ").find((c) => c.trim().startsWith("accessToken="))?.split("=")[1]
+    const accessToken =
+        (typeof handshakeToken === "string" && handshakeToken) ||
+        (typeof authorization === "string" ? authorization.replace(/^Bearer\s+/i, "") : undefined) ||
+        cookie?.split("; ").find((c) => c.trim().startsWith("accessToken="))?.split("=")[1]
 
     if(!accessToken){
         return next(new Error("Unauthorized"))
