@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { apiClient } from "@/lib/api"
 import { connectSocket } from "@/lib/socket"
 import { useAuthStore } from "@/store/useAuthStore"
@@ -9,12 +9,11 @@ import { clearAuthToken, persistAuthToken } from "@/lib/authStorage"
 
 export default function OAuthPage() {
     const router = useRouter()
-    const searchParams = useSearchParams()
     const { setUser } = useAuthStore()
     const [message, setMessage] = useState("Finishing sign-in...")
 
     useEffect(() => {
-        const accessToken = searchParams.get("accessToken")
+        const accessToken = new URLSearchParams(window.location.search).get("accessToken")
 
         if (!accessToken) {
             setMessage("OAuth callback is missing a token")
@@ -37,7 +36,7 @@ export default function OAuthPage() {
         }
 
         finalizeSignIn()
-    }, [router, searchParams, setUser])
+    }, [router, setUser])
 
     return (
         <div style={{
