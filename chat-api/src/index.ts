@@ -36,6 +36,14 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true, limit: '50mb'}))
 app.use(express.static('public'))
 
+app.get('/', (_req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: 'Chat backend is running',
+        timestamp: new Date().toISOString()
+    })
+})
+
 // routes
 app.use('/api/healthcheck', healthcheck)
 app.use('/api/auth', auth)
