@@ -67,7 +67,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
             const inRoom = typeof window !== 'undefined' && window.location.pathname.startsWith(`/chat/room/${removedId}`);
             if (inRoom) {
                 const toastId = `deleted-${removedId}-${Date.now()}`;
-                setToasts((t) => [...t, { id: toastId, text: 'This room was deleted — redirecting...' }]);
+                setToasts((t) => [...t, { id: toastId, text: 'This room was deleted - redirecting...' }]);
                 setTimeout(() => {
                     setToasts((t) => t.filter((x) => x.id !== toastId));
                     router.push('/chat');
@@ -85,10 +85,9 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
         try {
             await apiClient.delete(`/room/${id}`);
             setRooms((prev) => prev.filter((r) => r._id !== id));
-            // owner who deleted can be redirected immediately
             if (typeof window !== 'undefined' && window.location.pathname.startsWith(`/chat/room/${id}`)) {
                 const toastId = `deleted-owner-${id}-${Date.now()}`;
-                setToasts((t) => [...t, { id: toastId, text: 'You deleted this room — redirecting...' }]);
+                setToasts((t) => [...t, { id: toastId, text: 'You deleted this room - redirecting...' }]);
                 setTimeout(() => {
                     setToasts((t) => t.filter((x) => x.id !== toastId));
                     router.push('/chat');
@@ -132,19 +131,19 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
             <div style={{
                 display: 'flex', height: '100vh', width: '100%',
                 alignItems: 'center', justifyContent: 'center',
-                background: '#0a0a0f',
+                background: '#0A0A0A',
             }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
                     <div style={{
-                        width: 24, height: 24, borderRadius: '50%',
-                        border: '2px solid #333', borderTopColor: '#71717a',
+                        width: 22, height: 22, borderRadius: '50%',
+                        border: '2px solid rgba(255,255,255,0.08)',
+                        borderTopColor: 'var(--echo-text-mute)',
                         animation: 'spin 0.7s linear infinite',
                     }} />
-                    <p style={{
-                        fontSize: '12px', fontWeight: 500,
-                        letterSpacing: '0.04em', color: '#52525b',
+                    <p className="font-mono" style={{
+                        fontSize: 11, letterSpacing: '0.22em', color: 'var(--echo-text-mute)',
                     }}>
-                        Connecting…
+                        CONNECTING…
                     </p>
                 </div>
             </div>
@@ -155,52 +154,58 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
         <div style={{
             display: 'flex', flexDirection: 'column',
             height: '100vh', width: '100%',
-            background: '#0a0a0f', color: '#e4e4e7',
-            overflow: 'hidden', fontFamily: 'var(--font-inter), system-ui, -apple-system, sans-serif',
+            background: '#0A0A0A', color: 'var(--echo-text)',
+            overflow: 'hidden',
         }}>
 
             <nav style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                height: '48px', padding: '0 20px', flexShrink: 0,
+                height: 52, padding: '0 20px', flexShrink: 0,
                 borderBottom: '1px solid rgba(255,255,255,0.06)',
-                background: '#0a0a0f',
+                background: '#0A0A0A',
             }}>
                 <div
-                    style={{
-                        display: 'flex', alignItems: 'center', gap: '8px',
-                        cursor: 'pointer',
-                    }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}
                     onClick={() => router.push('/chat')}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{ width: 16, height: 16, color: '#e4e4e7' }}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                    </svg>
-                    <span style={{ fontSize: '14px', fontWeight: 600, color: '#fff', letterSpacing: '-0.01em' }}>Echo</span>
+                    <span className="echo-signal-bars" aria-hidden>
+                        <span />
+                        <span />
+                        <span />
+                    </span>
+                    <span className="font-mono" style={{
+                        fontSize: 13, color: '#fff', letterSpacing: '0.3em',
+                    }}>
+                        ECHO
+                    </span>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 400, color: '#71717a' }}>
-                        {user?.username}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <span className="font-mono" style={{
+                        fontSize: 11, color: 'var(--echo-text-mute)', letterSpacing: '0.1em',
+                    }}>
+                        @{user?.username}
                     </span>
                     <button
                         onClick={handleLogout}
+                        className="font-mono"
                         style={{
-                            background: 'none', border: '1px solid rgba(255,255,255,0.08)',
-                            borderRadius: '4px', padding: '4px 10px',
-                            fontSize: '11px', fontWeight: 500, color: '#71717a',
-                            cursor: 'pointer', transition: 'color 0.15s, border-color 0.15s',
+                            background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: 0, padding: '5px 12px',
+                            fontSize: 11, letterSpacing: '0.18em', color: 'var(--echo-text-soft)',
+                            cursor: 'pointer', transition: 'color 150ms, border-color 150ms',
                         }}
                         onMouseEnter={(e) => {
-                            e.currentTarget.style.color = '#e4e4e7';
-                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+                            e.currentTarget.style.color = '#fff';
+                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)';
                         }}
                         onMouseLeave={(e) => {
-                            e.currentTarget.style.color = '#71717a';
-                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                            e.currentTarget.style.color = 'var(--echo-text-soft)';
+                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
                         }}
                         title="Log out"
                     >
-                        Log out
+                        LOG OUT
                     </button>
                 </div>
             </nav>
@@ -208,18 +213,20 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
             <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
                 <aside style={{
-                    display: 'flex', width: '220px', flexShrink: 0,
+                    display: 'flex', width: 240, flexShrink: 0,
                     flexDirection: 'column',
                     borderRight: '1px solid rgba(255,255,255,0.06)',
-                    background: '#111',
+                    background: '#0d0d0f',
                 }}>
-                    <div style={{ flex: 1, overflowY: 'auto', padding: '16px 12px 8px' }} className="hide-scrollbar">
-                        <p style={{
-                            fontSize: '10px', fontWeight: 500,
-                            textTransform: 'uppercase', letterSpacing: '0.08em',
-                            color: '#52525b', padding: '0 12px', marginBottom: '8px',
+                    <div style={{ flex: 1, overflowY: 'auto', padding: '18px 0 8px' }} className="hide-scrollbar">
+                        <p className="font-mono" style={{
+                            fontSize: 10,
+                            letterSpacing: '0.28em',
+                            color: 'var(--echo-text-faint)',
+                            padding: '0 16px',
+                            margin: '0 0 10px',
                         }}>
-                            Channels
+                            CHANNELS
                         </p>
                         <RoomList rooms={rooms} onDelete={(id) => requestDeleteRoom(id, rooms.find(r => r._id === id)?.name)} />
                     </div>
@@ -231,18 +238,19 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
                         <button
                             type="button"
                             onClick={() => setCreateOpen(true)}
+                            className="font-mono"
                             style={{
-                                background: 'none', border: 'none',
-                                fontSize: '12px', fontWeight: 500, color: '#52525b',
+                                background: 'transparent', border: 'none',
+                                fontSize: 11, letterSpacing: '0.18em', color: 'var(--echo-text-soft)',
                                 cursor: 'pointer', padding: '4px 0',
-                                transition: 'color 0.15s',
-                                display: 'flex', alignItems: 'center', gap: '6px',
+                                transition: 'color 150ms',
+                                display: 'flex', alignItems: 'center', gap: 8,
                             }}
-                            onMouseEnter={(e) => { e.currentTarget.style.color = '#e4e4e7'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.color = '#52525b'; }}
+                            onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--echo-text-soft)'; }}
                         >
-                            <span style={{ fontSize: '14px', lineHeight: 1 }}>+</span>
-                            New Channel
+                            <span style={{ fontSize: 14, lineHeight: 1 }}>+</span>
+                            NEW CHANNEL
                         </button>
                     </div>
                 </aside>
@@ -250,7 +258,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
                 <main style={{
                     position: 'relative', display: 'flex',
                     flex: 1, flexDirection: 'column', overflow: 'hidden',
-                    background: '#0a0a0f',
+                    background: '#0A0A0A',
                 }}>
                     {children}
                 </main>

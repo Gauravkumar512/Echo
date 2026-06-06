@@ -1,24 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const jetbrains = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
-  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-grotesk",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Echo – Real-time messaging for teams",
+  title: "Echo - Signal never drops.",
   description:
-    "Fast, secure, and focused. Echo gives your team a clean workspace to communicate without the noise.",
+    "Echo transmits your team's conversations in real time. No lag. No bloat. Just signal.",
 };
 
 export default function RootLayout({
@@ -29,9 +31,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full`}
+      className={`${jetbrains.variable} ${spaceGrotesk.variable} h-full`}
     >
-      <body style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', background: '#0a0a0f' }}>
+      <body
+        style={{
+          minHeight: "100%",
+          display: "flex",
+          flexDirection: "column",
+          background: "#0A0A0A",
+        }}
+      >
         {children}
         <Analytics />
       </body>

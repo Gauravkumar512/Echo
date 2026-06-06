@@ -71,7 +71,6 @@ passport.use(
                 });
 
                 if (user) {
-                    // User found by email but Google not yet linked — link it now
                     if (!user.googleId) {
                         user.googleId = googleId;
                         if (!user.avatar && avatar) {
@@ -82,7 +81,6 @@ passport.use(
                     return done(null, user);
                 }
 
-                // No existing user — create a new one
                 const username = (verifiedEmail.split("@")[0] ?? verifiedEmail)
                     .toLowerCase()
                     .replace(/[^a-z0-9_-]/g, "");
@@ -126,7 +124,7 @@ passport.use(
                 });
 
                 if (user) {
-                    // User found by email but GitHub not yet linked — link it now
+                    // User found by email but GitHub not yet linked - link it now
                     if (!user.githubId) {
                         user.githubId = githubId;
                         if (!user.avatar && avatar) {
@@ -137,7 +135,7 @@ passport.use(
                     return done(null, user);
                 }
 
-                // No existing user — create a new one
+                // No existing user - create a new one
                 // Prefer GitHub username, fallback to email prefix
                 const username = (profile.username || email.split("@")[0])
                     .toLowerCase()

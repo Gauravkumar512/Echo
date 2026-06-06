@@ -18,6 +18,7 @@ export default function LoginPage() {
 
     const router = useRouter()
     const { setUser } = useAuthStore()
+
     const startOAuth = (provider: "google" | "github") => {
         const baseUrl = (apiClient.defaults.baseURL || process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "")
         if (!baseUrl) {
@@ -32,14 +33,12 @@ export default function LoginPage() {
         setError("")
         setLoading(true)
         try {
-            const response = await apiClient.post('/auth/login', { email, password })
+            const response = await apiClient.post("/auth/login", { email, password })
             const { user: userData, accessToken } = response.data.data
-            if (accessToken) {
-                persistAuthToken(accessToken)
-            }
+            if (accessToken) persistAuthToken(accessToken)
             setUser(userData)
             connectSocket()
-            router.push('/chat')
+            router.push("/chat")
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.message
@@ -53,161 +52,188 @@ export default function LoginPage() {
     }
 
     return (
-        <div style={{
-            minHeight: '100vh', width: '100%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: '#0a0a0f',
-            fontFamily: 'var(--font-inter), system-ui, -apple-system, sans-serif',
-        }}>
-            <div style={{
-                width: '100%', maxWidth: '380px',
-                margin: '0 auto', padding: '40px 24px',
-                display: 'flex', flexDirection: 'column', alignItems: 'center',
-            }}>
-                {/* Logo */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '32px' }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{ width: 18, height: 18, color: '#e4e4e7' }}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                    </svg>
-                    <span style={{ fontSize: '15px', fontWeight: 600, color: '#fff', letterSpacing: '-0.01em' }}>Echo</span>
+        <div
+            style={{
+                minHeight: "100vh",
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#0A0A0A",
+                padding: "32px 16px",
+            }}
+        >
+            <div style={{ width: "100%", maxWidth: 400 }}>
+                <div style={{ textAlign: "center", marginBottom: 28 }}>
+                    <Link
+                        href="/"
+                        className="font-display"
+                        style={{
+                            fontSize: 18,
+                            fontWeight: 600,
+                            color: "#fff",
+                            textDecoration: "none",
+                            letterSpacing: "-0.02em",
+                        }}
+                    >
+                        Echo
+                    </Link>
                 </div>
 
-                {/* Heading */}
-                <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-                    <h1 style={{ fontSize: '18px', fontWeight: 600, color: '#fff', margin: '0 0 6px', letterSpacing: '-0.02em' }}>
-                        Welcome back
-                    </h1>
-                    <p style={{ fontSize: '12px', color: '#52525b', margin: 0 }}>
-                        Sign in to your account
-                    </p>
-                </div>
+                <h1
+                    className="font-display"
+                    style={{
+                        fontSize: 22,
+                        fontWeight: 600,
+                        color: "#fff",
+                        margin: "0 0 6px",
+                        letterSpacing: "-0.02em",
+                        textAlign: "center",
+                    }}
+                >
+                    Welcome back
+                </h1>
+                <p
+                    style={{
+                        fontSize: 13,
+                        color: "#B3B3B3",
+                        margin: "0 0 28px",
+                        textAlign: "center",
+                    }}
+                >
+                    Sign in to your Echo account
+                </p>
 
-                {/* Error */}
                 {error && (
-                    <div style={{
-                        width: '100%', marginBottom: '16px',
-                        padding: '10px 12px', borderRadius: '4px',
-                        background: '#1a0a0a', border: '1px solid #3f1515',
-                        fontSize: '12px', color: '#ef4444', fontWeight: 500,
-                    }}>
+                    <div
+                        style={{
+                            marginBottom: 16,
+                            padding: "10px 12px",
+                            borderRadius: 6,
+                            border: "1px solid rgba(239,68,68,0.25)",
+                            background: "rgba(239,68,68,0.08)",
+                            fontSize: 12,
+                            color: "#ef4444",
+                        }}
+                    >
                         {error}
                     </div>
                 )}
 
-                {/* Form */}
-                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-                    <div>
-                        <label htmlFor="login-email" style={{
-                            display: 'block', fontSize: '11px', fontWeight: 500,
-                            color: '#a1a1aa', marginBottom: '6px', letterSpacing: '0.02em',
-                        }}>
-                            Email
-                        </label>
-                        <input
-                            id="login-email"
-                            type="email"
-                            placeholder="you@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            style={{
-                                width: '100%', height: '38px', boxSizing: 'border-box',
-                                background: '#111', border: '1px solid rgba(255,255,255,0.08)',
-                                borderRadius: '4px', padding: '0 12px',
-                                fontSize: '13px', color: '#e4e4e7', outline: 'none',
-                                fontFamily: 'inherit', transition: 'border-color 0.15s',
-                            }}
-                            onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; }}
-                            onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
-                        />
-                    </div>
-
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                            <label htmlFor="login-password" style={{
-                                fontSize: '11px', fontWeight: 500,
-                                color: '#a1a1aa', letterSpacing: '0.02em',
-                            }}>
-                                Password
-                            </label>
-                            <span style={{ fontSize: '11px', color: '#52525b', cursor: 'pointer' }}>
-                                Forgot password?
-                            </span>
-                        </div>
-                        <input
-                            id="login-password"
-                            type="password"
-                            placeholder="········"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            style={{
-                                width: '100%', height: '38px', boxSizing: 'border-box',
-                                background: '#111', border: '1px solid rgba(255,255,255,0.08)',
-                                borderRadius: '4px', padding: '0 12px',
-                                fontSize: '13px', color: '#e4e4e7', outline: 'none',
-                                fontFamily: 'inherit', transition: 'border-color 0.15s',
-                            }}
-                            onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; }}
-                            onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
-                        />
-                    </div>
+                <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <Field
+                        id="login-email"
+                        label="Email"
+                        type="email"
+                        value={email}
+                        onChange={setEmail}
+                        placeholder="you@example.com"
+                        required
+                        autoComplete="email"
+                    />
+                    <Field
+                        id="login-password"
+                        label="Password"
+                        type="password"
+                        value={password}
+                        onChange={setPassword}
+                        placeholder="••••••••"
+                        required
+                        autoComplete="current-password"
+                        rightSlot={
+                            <Link
+                                href="/login"
+                                style={{
+                                    fontSize: 12,
+                                    color: "#B3B3B3",
+                                    textDecoration: "none",
+                                }}
+                            >
+                                Forgot?
+                            </Link>
+                        }
+                    />
 
                     <button
                         type="submit"
                         id="login-submit"
                         disabled={loading}
+                        className="font-mono"
                         style={{
-                            width: '100%', height: '38px', marginTop: '4px',
-                            borderRadius: '4px', border: 'none',
-                            background: loading ? '#1a1a1f' : '#fff',
-                            color: loading ? '#52525b' : '#111',
-                            fontSize: '13px', fontWeight: 500,
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            transition: 'background 0.15s, color 0.15s',
-                            fontFamily: 'inherit',
+                            width: "100%",
+                            padding: "11px 16px",
+                            borderRadius: 6,
+                            border: "none",
+                            background: loading ? "#2a2a2a" : "#EAEAEA",
+                            color: loading ? "#666" : "#000",
+                            fontSize: 13,
+                            fontWeight: 600,
+                            letterSpacing: "0.12em",
+                            cursor: loading ? "not-allowed" : "pointer",
+                            transition: "background 160ms ease, color 160ms ease",
+                            marginTop: 4,
+                        }}
+                        onMouseEnter={(e) => {
+                            if (!loading) e.currentTarget.style.background = "#fff"
+                        }}
+                        onMouseLeave={(e) => {
+                            if (!loading) e.currentTarget.style.background = "#EAEAEA"
                         }}
                     >
-                        {loading ? "Signing in…" : "Sign in"}
+                        {loading ? "Signing in…" : "INITIATE_SIGNAL"}
                     </button>
 
-                    {/* Divider */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '4px 0' }}>
-                        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-                        <span style={{ fontSize: '11px', color: '#52525b' }}>or continue with</span>
-                        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                            margin: "6px 0",
+                            fontSize: 11,
+                            color: "#6b6b75",
+                        }}
+                    >
+                        <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.08)" }} />
+                        <span>or</span>
+                        <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.08)" }} />
                     </div>
 
-                    {/* OAuth buttons */}
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ display: "flex", gap: 8 }}>
                         {[
-                            { src: '/google-color-svgrepo-com.svg', label: 'Google' },
-                            { src: '/github-svgrepo-com.svg', label: 'GitHub' },
-                        ].map(({ src, label }) => (
+                            { src: "/google-color-svgrepo-com.svg", label: "Google", id: "google" as const },
+                            { src: "/github-svgrepo-com.svg", label: "GitHub", id: "github" as const },
+                        ].map(({ src, label, id }) => (
                             <button
-                                key={label}
+                                key={id}
                                 type="button"
-                                onClick={() => startOAuth(label.toLowerCase() as "google" | "github")}
+                                onClick={() => startOAuth(id)}
                                 style={{
-                                    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    gap: '8px', height: '36px',
-                                    background: '#111', border: '1px solid rgba(255,255,255,0.08)',
-                                    borderRadius: '4px', fontSize: '12px',
-                                    color: '#a1a1aa', cursor: 'pointer',
-                                    fontFamily: 'inherit', transition: 'border-color 0.15s, color 0.15s',
+                                    flex: 1,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: 8,
+                                    padding: "10px 12px",
+                                    background: "transparent",
+                                    border: "1px solid #374151",
+                                    borderRadius: 6,
+                                    fontSize: 13,
+                                    color: "#B3B3B3",
+                                    cursor: "pointer",
+                                    transition: "border-color 150ms, color 150ms",
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
-                                    e.currentTarget.style.color = '#e4e4e7';
+                                    e.currentTarget.style.borderColor = "#4b5563"
+                                    e.currentTarget.style.color = "#fff"
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-                                    e.currentTarget.style.color = '#a1a1aa';
+                                    e.currentTarget.style.borderColor = "#374151"
+                                    e.currentTarget.style.color = "#B3B3B3"
                                 }}
                             >
                                 <Image
                                     src={src}
-                                    alt={`${label} icon`}
+                                    alt=""
                                     width={14}
                                     height={14}
                                     style={{ filter: label === "GitHub" ? "invert(1)" : "none" }}
@@ -218,13 +244,80 @@ export default function LoginPage() {
                     </div>
                 </form>
 
-                <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: '#52525b' }}>
-                    Don&apos;t have an account?{' '}
-                    <Link href="/register" style={{ color: '#a1a1aa', fontWeight: 500, textDecoration: 'none' }}>
+                <p style={{ marginTop: 24, textAlign: "center", fontSize: 13, color: "#B3B3B3" }}>
+                    No account?{" "}
+                    <Link
+                        href="/register"
+                        style={{ color: "#fff", textDecoration: "none", fontWeight: 500 }}
+                    >
                         Sign up
                     </Link>
                 </p>
             </div>
+        </div>
+    )
+}
+
+function Field({
+    id,
+    label,
+    type,
+    value,
+    onChange,
+    placeholder,
+    required,
+    autoComplete,
+    rightSlot,
+}: {
+    id: string
+    label: string
+    type: "text" | "email" | "password"
+    value: string
+    onChange: (v: string) => void
+    placeholder?: string
+    required?: boolean
+    autoComplete?: string
+    rightSlot?: React.ReactNode
+}) {
+    return (
+        <div>
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 6,
+                }}
+            >
+                <label htmlFor={id} style={{ fontSize: 13, color: "#e4e4e7", fontWeight: 500 }}>
+                    {label}
+                </label>
+                {rightSlot}
+            </div>
+            <input
+                id={id}
+                type={type}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={placeholder}
+                required={required}
+                autoComplete={autoComplete}
+                style={{
+                    width: "100%",
+                    boxSizing: "border-box",
+                    padding: "10px 12px",
+                    background: "transparent",
+                    border: "1px solid #374151",
+                    borderRadius: 6,
+                    fontSize: 14,
+                    color: "#fff",
+                    outline: "none",
+                    fontFamily: "inherit",
+                    transition: "border-color 150ms",
+                }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "#6b7280")}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#374151")}
+            />
         </div>
     )
 }
