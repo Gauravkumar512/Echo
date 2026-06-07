@@ -180,7 +180,7 @@ export default function LoginPage() {
                             if (!loading) e.currentTarget.style.background = "#EAEAEA"
                         }}
                     >
-                        {loading ? "Signing in…" : "INITIATE_SIGNAL"}
+                        {loading ? "Signing in…" : "INITIATE SIGNAL"}
                     </button>
 
                     <div

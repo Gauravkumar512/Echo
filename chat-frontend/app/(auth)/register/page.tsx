@@ -200,7 +200,7 @@ export default function RegisterPage() {
                             if (!loading) e.currentTarget.style.background = "#EAEAEA"
                         }}
                     >
-                        {loading ? "Creating account…" : "INITIATE_SIGNAL"}
+                        {loading ? "Creating account…" : "INITIATE SIGNAL"}
                     </button>
 
                     <div

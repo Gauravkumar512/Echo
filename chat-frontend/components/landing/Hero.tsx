@@ -120,7 +120,7 @@ export default function Hero() {
         >
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
             <Link href="/register" className="font-mono echo-cta-primary">
-              INITIATE_SIGNAL
+              INITIATE SIGNAL
             </Link>
             <Link
               href="#features"

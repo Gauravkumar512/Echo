@@ -176,7 +176,6 @@ export default function ChannelsStrip() {
 
           </aside>
 
-          {/* PANEL (thin slice for context — shows it's a real app) */}
           <div
             style={{
               display: "flex",
@@ -242,7 +241,7 @@ export default function ChannelsStrip() {
               <MockMessage
                 handle="maya"
                 time="09:41"
-                text="Pushed the patch — packet loss is back under 0.01%."
+                text="Pushed the patch - packet loss is back under 0.01%."
               />
               <MockMessage
                 handle="jonas"
@@ -268,7 +267,6 @@ export default function ChannelsStrip() {
               </div>
             </div>
 
-            {/* Composer */}
             <div
               style={{
                 borderTop: "1px solid var(--echo-border)",

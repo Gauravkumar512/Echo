@@ -21,7 +21,7 @@ export default function OnlineUsers({ users }: OnlineUsersProps) {
                     letterSpacing: '0.08em', textTransform: 'uppercase',
                     color: '#52525b',
                 }}>
-                    Online — {users.length}
+                    Online - {users.length}
                 </h3>
             </div>
             
