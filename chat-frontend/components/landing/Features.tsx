@@ -1,7 +1,7 @@
 "use client"
 
-import { motion, useInView } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
+import { motion } from "framer-motion"
+import { useEffect, useRef } from "react"
 
 function PacketCanvas() {
   const ref = useRef<HTMLCanvasElement>(null)
@@ -221,7 +221,7 @@ export default function Features() {
         borderBottom: "1px solid var(--echo-border)",
       }}
     >
-      <div style={{ maxWidth: 1300, margin: "0 auto", padding: "120px 32px 32px" }}>
+      <div style={{ maxWidth: 1300, margin: "0 auto", padding: "80px 32px 40px" }}>
         <motion.h2
           className="font-display"
           initial={{ opacity: 0, y: 16 }}
@@ -255,12 +255,11 @@ function Row({ feature, index }: { feature: Feature; index: number }) {
     <div
       style={{
         position: "relative",
-        minHeight: "92vh",
         display: "grid",
         gridTemplateColumns: "minmax(0, 0.45fr) minmax(0, 1fr) minmax(0, 0.95fr)",
         alignItems: "center",
         gap: 24,
-        padding: "0 56px",
+        padding: "64px 56px",
         borderTop:
           index === 0 ? "1px solid var(--echo-border)" : "1px solid transparent",
         borderBottom: "1px solid var(--echo-border)",
@@ -325,7 +324,7 @@ function Row({ feature, index }: { feature: Feature; index: number }) {
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: "relative",
-          height: "min(380px, 55vh)",
+          height: "min(260px, 38vh)",
           border: "1px solid var(--echo-border)",
           background: "var(--echo-surface-1)",
         }}
@@ -337,8 +336,7 @@ function Row({ feature, index }: { feature: Feature; index: number }) {
         @media (max-width: 960px) {
           .echo-feature-row {
             grid-template-columns: 1fr !important;
-            padding: 80px 24px !important;
-            min-height: auto !important;
+            padding: 48px 24px !important;
           }
           .echo-feature-row > div:last-child {
             height: 280px !important;

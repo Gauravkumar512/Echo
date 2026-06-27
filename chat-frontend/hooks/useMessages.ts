@@ -20,7 +20,7 @@ export type RoomMeta = {
 } | null;
 
 function sortByTime(a: ChatItem, b: ChatItem) {
-    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    return a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0;
 }
 
 export const useMessages = (roomId: string, roomMeta: RoomMeta) => {

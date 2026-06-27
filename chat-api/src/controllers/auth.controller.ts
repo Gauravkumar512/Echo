@@ -14,14 +14,8 @@ const authCookieOptions = (): CookieOptions => {
     };
 };
 
-const generateAccessAndRefreshToken = async (userId: string) => {
+const generateAccessAndRefreshToken = async (user: IUser) => {
     try {
-        const user = await User.findById(userId)
-
-        if(!user){
-            throw new ApiError(404, "User not found")
-        }
-
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
 
@@ -59,12 +53,6 @@ export const registerUser = asyncHandler(async (req: Request,res: Response)=>{
         password
     })
 
-const UserData = await User.findById(user._id).select("-password -__v")
-
-    if(!UserData){
-        throw new ApiError(404, "User not found")
-    }
-
     const accessToken = user.generateAccessToken()
 
     const option = authCookieOptions()
@@ -73,7 +61,12 @@ const UserData = await User.findById(user._id).select("-password -__v")
             .status(201)
             .cookie("accessToken", accessToken, option)
             .json(new ApiResponse(201, "User registered successfully", {
-                user: UserData,
+                user: {
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    avatar: user.avatar,
+                },
                 accessToken,
                 refreshToken: null,
             }))
@@ -101,9 +94,7 @@ export const loginUser = asyncHandler(async (req: Request,res: Response)=>{
         throw new ApiError(400, "Invalid credentials")
     }
 
-    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id.toString())
-
-    const logginUser = await User.findById(user._id).select("-password -refreshToken -__v")
+    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user)
 
     const option = authCookieOptions()
 
@@ -112,7 +103,12 @@ export const loginUser = asyncHandler(async (req: Request,res: Response)=>{
             .cookie("accessToken", accessToken, option)
             .cookie("refreshToken", refreshToken, option)
             .json(new ApiResponse(200, "User logged in successfully", {
-                user: logginUser,
+                user: {
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    avatar: user.avatar,
+                },
                 accessToken,
                 refreshToken,
             }))
@@ -152,9 +148,7 @@ export const googleCallback = async (req: Request, res: Response) => {
             return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
         }
 
-        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-            user._id.toString()
-        );
+        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user);
 
         const option = authCookieOptions();
 
@@ -175,9 +169,7 @@ export const githubCallback = async (req: Request, res: Response) => {
             return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
         }
 
-        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-            user._id.toString()
-        );
+        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user);
 
         const option = authCookieOptions();
 

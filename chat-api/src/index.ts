@@ -33,7 +33,7 @@ app.use(passport.initialize())
 // common middlewares
 
 app.use(express.json())
-app.use(express.urlencoded({extended: true, limit: '50mb'}))
+app.use(express.urlencoded({extended: true, limit: '1mb'}))
 app.use(express.static('public'))
 
 app.get('/', (_req, res) => {

@@ -17,7 +17,7 @@ Echo is a real-time team chat app built as a monorepo with a Next.js frontend an
 
 ## Tech Stack
 
-- Frontend: Next.js 16, React 19, TypeScript, Zustand, Axios
+- Frontend: Next.js 16, React 19, TypeScript, Zustand, Axios, Tailwind CSS 4, Framer Motion
 - Backend: Express 5, TypeScript, Socket.IO, Passport, JWT, Zod
 - Database: MongoDB with Mongoose
 - OAuth: Google and GitHub
@@ -116,7 +116,7 @@ Base path: `/api`
 
 ### Health Check
 
-- `GET /api/healthcheck`
+- `GET /healthcheck`
 
 ## Socket Events
 

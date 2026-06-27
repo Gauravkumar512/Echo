@@ -12,10 +12,10 @@ type Metric = {
 }
 
 const METRICS: Metric[] = [
-  { value: 2, suffix: "M+", label: "ACTIVE TRANSMITTERS", fill: 72 },
-  { value: 50, suffix: "M+", label: "DAILY PACKETS", fill: 88 },
-  { value: 150, suffix: "+", label: "REGIONS ON-AIR", fill: 64 },
-  { value: 99.9, decimals: 1, suffix: "%", label: "SIGNAL UPTIME", fill: 96 },
+  { value: 10, suffix: "K+", label: "ACTIVE TRANSMITTERS", fill: 58 },
+  { value: 500, suffix: "K+", label: "DAILY PACKETS", fill: 74 },
+  { value: 690, suffix: "+", label: "CHANNELS ON-AIR", fill: 52 },
+  { value: 95.6, decimals: 1, suffix: "%", label: "SIGNAL UPTIME", fill: 85 },
 ]
 
 const ease = (t: number) => 1 - Math.pow(1 - t, 3)

@@ -25,7 +25,7 @@ const sendMessage = (io: TypedServer, socket: TypedSocket) => {
                     avatar: populated.sender.avatar?.toString() || "",
                 },
                 room: populated.room.toString(),
-                createdAt: (populated as any).createdAt || new Date()
+                createdAt: (populated as any).createdAt
             });
 
     } catch (error) {

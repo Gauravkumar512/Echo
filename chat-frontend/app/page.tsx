@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { apiClient } from "@/lib/api"
+import { getAuthToken } from "@/lib/authStorage"
 import ScrollProgress from "@/components/landing/ScrollProgress"
 import Navbar from "@/components/landing/Navbar"
 import Hero from "@/components/landing/Hero"
@@ -19,6 +20,10 @@ export default function LandingPage() {
 
   useEffect(() => {
     const check = async () => {
+      if (!getAuthToken()) {
+        setCheckingAuth(false)
+        return
+      }
       try {
         await apiClient.get("/auth/me")
         router.replace("/chat")

@@ -65,7 +65,7 @@ export default function Hero() {
         <h1
           className="font-display"
           style={{
-            fontSize: "clamp(52px, 7.5vw, 88px)",
+            fontSize: "clamp(36px, 5.5vw, 72px)",
             lineHeight: 0.95,
             letterSpacing: "-0.03em",
             fontWeight: 700,
@@ -79,6 +79,7 @@ export default function Hero() {
               style={{
                 display: "block",
                 overflow: "hidden",
+                whiteSpace: "nowrap",
               }}
             >
               <motion.span
@@ -109,7 +110,7 @@ export default function Hero() {
             margin: 0,
           }}
         >
-          Echo transmits your team's conversations in real time. No lag. No
+          Echo transmits your teams conversations in real time. No lag. No
           bloat. Just signal.
         </motion.p>
 

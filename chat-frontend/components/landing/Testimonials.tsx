@@ -1,7 +1,6 @@
 "use client"
 
-import { motion, useInView } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
+import { motion } from "framer-motion"
 
 type Testimonial = {
   id: string
@@ -16,65 +15,66 @@ const ITEMS: Testimonial[] = [
     quote:
       "Switched from Slack on a Friday. By Monday, nobody missed it. Echo just gets out of the way and lets us work.",
     sender: "MAYA OKONKWO",
-    company: "HEAD OF ENGINEERING - NIMBUS",
+    company: "HEAD OF ENGINEERING · NIMBUS",
   },
   {
     id: "TRANSMISSION_02",
     quote:
       "Every other tool wanted to be a platform. Echo just wants to deliver your message. Refreshing.",
     sender: "JONAS RIEL",
-    company: "STAFF SRE - VOLTA LABS",
+    company: "STAFF SRE · VOLTA LABS",
   },
   {
     id: "TRANSMISSION_03",
     quote:
-      "Our standups got 40% shorter. Not because we changed the format - because the comms were already cleaner.",
+      "Our standups got 40% shorter. Not because we changed the format — because the comms were already cleaner.",
     sender: "PRIYA RAO",
-    company: "VP PRODUCT - FIELDLINE",
+    company: "VP PRODUCT · FIELDLINE",
+  },
+  {
+    id: "TRANSMISSION_04",
+    quote:
+      "We tried five tools in two years. Echo is the first one nobody complained about after week one.",
+    sender: "DANIEL VOSS",
+    company: "CTO · ARCHFORM",
+  },
+  {
+    id: "TRANSMISSION_05",
+    quote:
+      "The signal-to-noise ratio is unlike anything else. My team actually reads messages now.",
+    sender: "SARA CHEN",
+    company: "ENGINEERING LEAD · LIGHTPATH",
+  },
+  {
+    id: "TRANSMISSION_06",
+    quote:
+      "Real-time delivery without the chaos. Echo is what I wish we had built ourselves.",
+    sender: "MARCUS DELEON",
+    company: "FOUNDER · DRIFTWAVE",
   },
 ]
 
-function Typed({ text, run }: { text: string; run: boolean }) {
-  const [out, setOut] = useState("")
-
-  useEffect(() => {
-    if (!run) return
-    setOut("")
-    let i = 0
-    const id = setInterval(() => {
-      i += 1
-      setOut(text.slice(0, i))
-      if (i >= text.length) clearInterval(id)
-    }, 25)
-    return () => clearInterval(id)
-  }, [text, run])
-
-  return <>{out}</>
-}
-
-function Block({ item, align }: { item: Testimonial; align: "start" | "center" | "end" }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: "-80px" })
-
+function Card({ item }: { item: Testimonial }) {
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+    <div
       style={{
-        alignSelf: align === "start" ? "start" : align === "end" ? "end" : "center",
-        maxWidth: 380,
-        padding: "24px 0",
+        width: 340,
+        flexShrink: 0,
+        padding: "28px 28px 24px",
+        border: "1px solid var(--echo-border)",
+        background: "#0d0d0f",
+        display: "flex",
+        flexDirection: "column",
+        gap: 0,
       }}
     >
       <div
         className="font-tech"
         style={{
-          fontSize: 11,
+          fontSize: 10,
+          letterSpacing: "0.24em",
           color: "var(--echo-text-mute)",
-          letterSpacing: "0.22em",
-          marginBottom: 10,
+          marginBottom: 12,
         }}
       >
         {item.id}
@@ -83,46 +83,48 @@ function Block({ item, align }: { item: Testimonial; align: "start" | "center" |
         style={{
           height: 1,
           background: "var(--echo-border)",
-          marginBottom: 18,
+          marginBottom: 20,
         }}
       />
       <p
         style={{
-          fontSize: 17,
+          flex: 1,
+          fontSize: 15,
           fontStyle: "italic",
           color: "var(--echo-text-soft)",
-          lineHeight: 1.6,
-          margin: "0 0 22px",
-          minHeight: 110,
+          lineHeight: 1.65,
+          margin: "0 0 24px",
         }}
       >
-        “<Typed text={item.quote} run={inView} />”
+        &ldquo;{item.quote}&rdquo;
       </p>
       <div
         className="font-tech"
         style={{
-          fontSize: 12,
-          color: "var(--echo-text-mute)",
-          letterSpacing: "0.16em",
-          lineHeight: 1.6,
+          fontSize: 11,
+          letterSpacing: "0.14em",
+          lineHeight: 1.7,
         }}
       >
-        <div style={{ color: "var(--echo-text)" }}>{item.sender}</div>
-        <div>{item.company}</div>
+        <div style={{ color: "var(--echo-text)", fontWeight: 600 }}>{item.sender}</div>
+        <div style={{ color: "var(--echo-text-mute)" }}>{item.company}</div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
 export default function Testimonials() {
+  const doubled = [...ITEMS, ...ITEMS]
+
   return (
     <section
       style={{
         borderBottom: "1px solid var(--echo-border)",
-        padding: "120px 32px",
+        padding: "120px 0",
+        overflow: "hidden",
       }}
     >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ padding: "0 32px", maxWidth: 1200, margin: "0 auto 64px" }}>
         <motion.h2
           className="font-display"
           initial={{ opacity: 0, y: 16 }}
@@ -135,35 +137,62 @@ export default function Testimonials() {
             textAlign: "right",
             color: "var(--echo-text)",
             letterSpacing: "-0.03em",
-            margin: "0 0 64px",
+            margin: 0,
           }}
         >
           Incoming.
         </motion.h2>
+      </div>
 
+      <div style={{ position: "relative" }}>
+        {/* left fade */}
         <div
-          className="echo-testimonials-grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 48,
-            alignItems: "stretch",
-            minHeight: 420,
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 120,
+            background: "linear-gradient(to right, #0A0A0A, transparent)",
+            zIndex: 2,
+            pointerEvents: "none",
           }}
-        >
-          <Block item={ITEMS[0]} align="start" />
-          <Block item={ITEMS[1]} align="center" />
-          <Block item={ITEMS[2]} align="end" />
+        />
+        {/* right fade */}
+        <div
+          style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 120,
+            background: "linear-gradient(to left, #0A0A0A, transparent)",
+            zIndex: 2,
+            pointerEvents: "none",
+          }}
+        />
+
+        <div className="echo-marquee-track">
+          {doubled.map((item, i) => (
+            <Card key={i} item={item} />
+          ))}
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 860px) {
-          .echo-testimonials-grid {
-            grid-template-columns: 1fr !important;
-            gap: 32px !important;
-            min-height: auto !important;
-          }
+        @keyframes echo-marquee {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .echo-marquee-track {
+          display: flex;
+          gap: 20px;
+          width: max-content;
+          padding: 0 32px;
+          animation: echo-marquee 42s linear infinite;
+        }
+        .echo-marquee-track:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </section>
