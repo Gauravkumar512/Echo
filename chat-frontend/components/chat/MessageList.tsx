@@ -89,8 +89,6 @@ export default function MessageList({ items, isLoading }: MessageListProps) {
         );
     }
 
-    let lastDay = "";
-
     return (
         <div
             className="hide-scrollbar"
@@ -105,8 +103,8 @@ export default function MessageList({ items, isLoading }: MessageListProps) {
         >
             {items.map((item, i) => {
                 const itemDay = dayKey(item.createdAt);
-                const showDivider = itemDay && itemDay !== lastDay;
-                if (showDivider) lastDay = itemDay;
+                const prevItemDay = i > 0 ? dayKey(items[i - 1].createdAt) : "";
+                const showDivider = !!itemDay && itemDay !== prevItemDay;
 
                 if (item.type === "system") {
                     return (
@@ -136,14 +134,11 @@ export default function MessageList({ items, isLoading }: MessageListProps) {
 
                 const isMe = item.sender._id === user?._id;
                 const prev = items[i - 1];
-                const prevDay = prev ? dayKey(prev.createdAt) : "";
                 const sameSenderAsPrev =
                     !showDivider &&
                     prev &&
                     prev.type !== "system" &&
-                    "sender" in prev &&
-                    prev.sender._id === item.sender._id &&
-                    prevDay === itemDay;
+                    prev.sender._id === item.sender._id;
 
                 return (
                     <div key={item._id}>
